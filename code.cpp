@@ -124,8 +124,8 @@ int main(){
         cout << "You must type a number between 1-3!\n";
     }
     
-    cout << "The last number: " << endl;
-    cout << "The number generated: " << endl;
+    // cout << "The last number: "  << ultimo numero << endl;
+    // cout << "The number generated: " << numero agr <<  endl;
     
 
     return 0;
