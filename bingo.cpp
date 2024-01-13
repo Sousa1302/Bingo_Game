@@ -1,104 +1,134 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <algorithm>                        // Library to use "sort" so i can order the sorted numbers
 
 using namespace std;
 
-int nums_card[5][5];
-int amount_nums, generator_type, amount_cards;
 
-
-
-void bubbleSort(int arr[], int n) {
-    for (int i = 0; i < n - 1; ++i) {
-        for (int j = 0; j < n - i - 1; ++j) {
-            if (arr[j] > arr[j + 1]) {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
+int Number_Generator_Cards(int max_value) {
+    return rand() % max_value + 1;
 }
 
-vector<int> Number_Generator(int x){
-    vector<int> numbers(x + 1);
-
-    for (int y = 0; y <= x; y++){
-        numbers[y] = 1 + rand() % x;
+int Number_Generator_Bingo(int max_amount){
+    if (max_amount == 1){
+        return rand() % 75 + 1;
     }
+    if (max_amount == 2){
+        return rand() % 90 + 1;
+    }
+    if (max_amount == 3){
+        return rand() % 100 + 1;
+    }
+    return 0;
+}
 
-    return numbers;
+bool isNumberGenerated(const vector<int> &numbers, int number) {
+    for (int i = 0; i < numbers.size(); i++) {
+        if (numbers[i] == number) {
+            return true;                            // if number has already been generated 
+        }
+    }
+    return false;                                   // if number has not been generated yet
 }
 
 
-void generateAndSaveCard(int max_value, int card_number) {
-    ofstream ficheiro("Card" + to_string(card_number) + ".txt");            //Conversion from an integer to a string
-
-    for (int x = 0; x < 5; x++) {
-        for (int y = 0; y < 5; y++) {
-            nums_card[x][y] = 1 + rand() % max_value;                   //Generates the numbers for the card
-        }
+void printSortedNumbers(vector<int> &numbers) {                 // &numbers so i can modify the original numbers vector instead of a copy, so i can change the vector directly
+    sort(numbers.begin(), numbers.end());
+    
+    cout << "Sorted Numbers: ";
+    for (int x = 0; x < numbers.size(); x++) {
+        cout << numbers[x] << " ";
     }
+    cout << endl;
+}
 
-    if (ficheiro.is_open()) {
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
-                ficheiro << nums_card[x][y] << " | ";                   // Displays the bidimensional array values in the file.txt
+
+void generateAndSaveCard(int max_value, int card_number) {                  // Function to save and generate a card with the values 
+    ofstream file("Card" + to_string(card_number) + ".txt");
+
+    if (file.is_open()) {
+        vector<int> cardNumbers;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                int num = Number_Generator_Cards(max_value);
+                cardNumbers.push_back(num);
+                file << num << " | ";
             }
-            ficheiro << endl;
+            file << endl;
         }
-        ficheiro << endl; 
+        file.close();
+        
+
+        cout << "Card " << card_number << " Numbers: ";                         // Defines the card number
+        for (int x = 0; x < cardNumbers.size(); x++) {
+            cout << cardNumbers[x] << " ";
+        }
+        cout << endl;
+    } else {
+        cerr << "Unable to open file for card " << card_number << endl;
     }
 }
 
 int main() {
-    srand(time(NULL));
+    srand(time(0));
 
+    int amount_nums;
     cout << "Choose the amount of numbers\n";
     cout << "1. 75 nums \n2. 90 nums \n3. 100 nums\n";
     cin >> amount_nums;
 
-
-    cout << "Chose the type of generator!\n";
+    int generator_type;
+    cout << "Choose the type of generator!\n";
     cout << "1. Automatic \n2. Manual \n";
     cin >> generator_type;
 
-
-    cout << "Type the amount of card you want to generate: ";
+    int amount_cards;
+    cout << "Type the amount of cards you want to generate: ";
     cin >> amount_cards;
+
+    vector<int> drawnNumbers;
 
 
     for (int i = 1; i <= amount_cards; i++) {
-        vector<int> Generated_Numbers;
-
         switch (amount_nums) {
             case 1:
                 generateAndSaveCard(75, i);
-                Generated_Numbers = Number_Generator(75);
                 break;
 
             case 2:
                 generateAndSaveCard(90, i);
-                Generated_Numbers = Number_Generator(90);
                 break;
 
             case 3:
                 generateAndSaveCard(100, i);
-                Generated_Numbers = Number_Generator(100);
                 break;
 
             default:
                 cout << "You must type a number between 1-3!\n";
-                break;
+                return 1;
         }
-
-        /*cout << "Generated numbers: ";
-        for ( int num : Generated_Numbers){                                     // Tests the amount and the range of the bingo numbers generated
-            cout << num << " ";
-        }
-        cout << endl; */
     }
 
-   return 0;
+    char playAgain;
+do {
+    int drawnNumber = Number_Generator_Bingo(amount_nums);
+
+    while (isNumberGenerated(drawnNumbers, drawnNumber)) {              // verifys if the number has been generated , 1st parameter is the vector of dranwnumbers and the 2nd is the number that we will verify
+        drawnNumber = Number_Generator_Bingo(amount_nums);
+    }
+
+    drawnNumbers.push_back(drawnNumber);
+
+    cout << "Last drawn number: " << drawnNumbers[drawnNumbers.size() - 2] << endl;         // [drawnNumbers.size() - 2] is to access the value of the last number generated  
+    cout << "Drawn number: " << drawnNumber << endl;
+
+    printSortedNumbers(drawnNumbers);
+
+    cout << "Do you want to play again? (y/n): ";
+    cin >> playAgain;
+    cout << endl;
+
+    } while (playAgain == 'y' || playAgain == 'Y');
+    return 0;
 }
