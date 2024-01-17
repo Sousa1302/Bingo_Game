@@ -1,6 +1,6 @@
 /**
- * @file duvidas.cpp
- * @author Paulo Leite
+ * @file bingo.cpp
+ * @author Gonçalo Sousa
  * @brief Jogo do bingo
  * @version 0.1
  * @date 17 / 1 / 2024
@@ -12,6 +12,7 @@
 #include <vector>
 #include <algorithm>                        // Library to use "sort" so i can order the sorted numbers
 #include <unistd.h>                         // To use delays when generator type == automatic 
+#include <iomanip>
 
 using namespace std;
 
@@ -20,6 +21,31 @@ string color_reset = "\u001b[0m";
 int new_amount_value;
 vector<int> drawnNumbers;
 
+// Generates a table on which are displayed the numbers already generated and the not generated ones
+void displayBingoTable(const vector<int> &drawnNumbers, int amount_nums) {           // const because this function is destined to only print numbers and not modify the vector itself
+    cout << "Bingo Table:" << endl;
+
+    for (int i = 0; i <= amount_nums; i++) {
+        bool isDrawn = find(drawnNumbers.begin(), drawnNumbers.end(), i) != drawnNumbers.end();
+        
+        if (isDrawn) {
+            cout << color_red << setw(3) << i << color_reset;
+        } else {
+            cout << setw(3) << i;       // sets the width to 3 characters
+        }
+
+        if ((i + 1) % 10 == 0 && i != 0) {  // Jumps lines when it gets to 10
+            cout << endl;
+        } else {
+            cout << " | ";
+        }
+    }
+
+    cout << endl;
+}
+
+
+// Generates x amount of cards
 int Number_Generator_Cards(int max_value){
     return rand() % max_value + 1;
 }
@@ -67,19 +93,20 @@ bool isNumberGenerated(const vector<int> &numbers, int number){
 }
 
 
-void printSortedNumbers(vector<int> &numbers){                   // &numbers so i can modify the original numbers vector instead of a copy, so i can change the vector directly
-    sort(numbers.begin(), numbers.end());
+void printSortedNumbers(vector<int> &numbers) {         // &numbers so i can modify the original numbers vector instead of a copy, so i can change the vector directly
+    vector<int> sortedNumbers = numbers;                // Creates a copy of the original vector to sort
+    sort(sortedNumbers.begin(), sortedNumbers.end());
 
     cout << "Sorted Numbers: ";
-    for (int x = 0; x < numbers.size(); x++)
-        {
-            cout << color_red << numbers[x] << color_reset << " ";
-        }
+    for (int x = 0; x < sortedNumbers.size(); x++) {
+        cout << color_red << sortedNumbers[x] << color_reset << " ";
+    }
     cout << endl;
 }
 
 
-void generateAndSaveCard(int max_value, int card_number){                   // Function to save and generate a card with the values
+
+void generateAndSaveCard(int max_value, int card_number){                   // Function to save and generate a card with the values generated 
     ofstream file("Card" + to_string(card_number) + ".txt");
 
     if (file.is_open()){
@@ -149,58 +176,64 @@ int main(){
         }
 
     char playAgain;
-    do {       
-            int drawnNumber;
+    do {
+        int drawnNumber;
+        int lastDrawnNumber = 0;
 
-            if (generator_type == 1){               // automatic generator
-                
-                int intervalo = 2.5;              // 2 and a half seconds
-                
-                AmountCards_Conversion_to_corresponded_num(amount_nums);
+        if (generator_type == 1) {  // automatic generator
+            int intervalo = 2.5;    // 2 and a half seconds
 
-                for(int x = 0; x < new_amount_value; x++){
+            AmountCards_Conversion_to_corresponded_num(amount_nums);
+
+            for (int x = 0; x < new_amount_value; x++) {
+                drawnNumber = Number_Generator_Bingo(amount_nums);
+
+                while (isNumberGenerated(drawnNumbers, drawnNumber)) {
                     drawnNumber = Number_Generator_Bingo(amount_nums);
-
-                    while (isNumberGenerated(drawnNumbers, drawnNumber)){                // verifys if the number has been generated , 1st parameter is the vector of dranwnumbers and the 2nd is the number that we will verify
-                        drawnNumber = Number_Generator_Bingo(amount_nums);
-                    }
+                }
 
                 drawnNumbers.push_back(drawnNumber);
 
                 cout << endl;
-                cout << "Last drawn number: " << drawnNumbers[drawnNumbers.size() - 2] << endl;         // [drawnNumbers.size() - 2] is to access the value of the last number generated
+                cout << "Last drawn number: " << lastDrawnNumber << endl;
                 cout << "Drawn number: " << drawnNumber << endl;
 
-                printSortedNumbers(drawnNumbers);
+                displayBingoTable(drawnNumbers, new_amount_value);  
+
+                lastDrawnNumber = drawnNumber;
 
                 sleep(intervalo);
                 system("clear || cls");
-                }
             }
+        }  
+        else if (generator_type == 2) {  // Manual generator
+    do {
+        AmountCards_Conversion_to_corresponded_num(amount_nums);
+        drawnNumber = Number_Generator_Bingo(amount_nums);
 
-            else if (generator_type == 2){                      // Manual generator
-                drawnNumber = Number_Generator_Bingo(amount_nums);
+        while (isNumberGenerated(drawnNumbers, drawnNumber)) {
+            drawnNumber = Number_Generator_Bingo(amount_nums);
+        }
 
-                while (isNumberGenerated(drawnNumbers, drawnNumber)){                // verifys if the number has been generated , 1st parameter is the vector of dranwnumbers and the 2nd is the number that we will verify
-                        drawnNumber = Number_Generator_Bingo(amount_nums);
-                    }
+        drawnNumbers.push_back(drawnNumber);
 
-                drawnNumbers.push_back(drawnNumber);
+        cout << endl;
+        cout << "Last drawn number: " << lastDrawnNumber << endl;
+        cout << "Drawn number: " << drawnNumber << endl;
 
-                cout << endl;
-                cout << "Last drawn number: " << drawnNumbers[drawnNumbers.size() - 2] << endl;         // [drawnNumbers.size() - 2] is to access the value of the last number generated
-                cout << "Drawn number: " << drawnNumber << endl;
+        lastDrawnNumber = drawnNumber;
 
-                printSortedNumbers(drawnNumbers);
+        displayBingoTable(drawnNumbers, new_amount_value);  
 
-                cout << "Do you want to play again? (y/n): ";
-                cin >> playAgain;
-                cout << endl;
-                system("clear || cls");
-            }
+        cout << "Do you want to play again? (y/n): ";
+        cin >> playAgain;
+        cout << endl;
+        system("clear || cls");
+    } while (playAgain == 'y' || playAgain == 'Y');
+}
 
-        } while (playAgain == 'y' || playAgain == 'Y');
-    
+
+    }   while (playAgain == 'y' || playAgain == 'Y');
 
     return 0;
 }
