@@ -1,11 +1,24 @@
+/**
+ * @file duvidas.cpp
+ * @author Paulo Leite
+ * @brief Jogo do bingo
+ * @version 0.1
+ * @date 17 / 1 / 2024
+*/
+
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <algorithm>                        // Library to use "sort" so i can order the sorted numbers
-// #include <ncurses.h>                        // To change the already_generated numbers colors
 #include <unistd.h>                         // To use delays when generator type == automatic 
 
 using namespace std;
+
+string color_red = "\u001b[31m";
+string color_reset = "\u001b[0m";
+int new_amount_value;
+vector<int> drawnNumbers;
 
 int Number_Generator_Cards(int max_value){
     return rand() % max_value + 1;
@@ -27,7 +40,6 @@ int Number_Generator_Bingo(int max_amount){
     return 0;
 }
 
-int new_amount_value;
 
 int AmountCards_Conversion_to_corresponded_num(int conversion){
     if (conversion == 1){
@@ -61,7 +73,7 @@ void printSortedNumbers(vector<int> &numbers){                   // &numbers so 
     cout << "Sorted Numbers: ";
     for (int x = 0; x < numbers.size(); x++)
         {
-            cout << numbers[x] << " ";
+            cout << color_red << numbers[x] << color_reset << " ";
         }
     cout << endl;
 }
@@ -115,9 +127,6 @@ int main(){
     cout << "Type the amount of cards you want to generate: ";
     cin >> amount_cards;
 
-    vector<int> drawnNumbers;
-
-
     for (int i = 1; i <= amount_cards; i++){
             switch (amount_nums)
                 {
@@ -165,7 +174,7 @@ int main(){
                 printSortedNumbers(drawnNumbers);
 
                 sleep(intervalo);
-                
+                system("clear || cls");
                 }
             }
 
@@ -187,6 +196,7 @@ int main(){
                 cout << "Do you want to play again? (y/n): ";
                 cin >> playAgain;
                 cout << endl;
+                system("clear || cls");
             }
 
         } while (playAgain == 'y' || playAgain == 'Y');
