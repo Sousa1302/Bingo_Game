@@ -2,8 +2,8 @@
  * @file bingo.cpp
  * @author Gonçalo Sousa
  * @brief Jogo do bingo
- * @version 0.1
- * @date 17 / 1 / 2024
+ * @version 0.9
+ * @date 24 / 1 / 2024
 */
 
 
@@ -23,7 +23,7 @@ vector<int> drawnNumbers;
 
 // Generates a table on which are displayed the numbers already generated and the not generated ones
 void displayBingoTable(const vector<int> &drawnNumbers, int amount_nums) {           // const because this function is destined to only print numbers and not modify the vector itself
-    cout << "Bingo Table:" << endl;
+    cout << "Bingo Table:\n" << endl;
 
     for (int i = 1; i <= amount_nums; i++) {
         bool isDrawn = find(drawnNumbers.begin(), drawnNumbers.end(), i) != drawnNumbers.end();
@@ -34,10 +34,19 @@ void displayBingoTable(const vector<int> &drawnNumbers, int amount_nums) {      
             cout << setw(3) << i;       // sets the width to 3 characters
         }
 
-        if ((i + 1) % 10 == 0 && i != 0) {  // Jumps lines when it gets to 10
+        if (i % 10 == 0 && i != 0) {  // Jumps lines when it gets to multiples of 10
             cout << endl;
         } else {
             cout << " | ";
+        }
+
+        if (i % 10 == 0 && i != 0 && i < amount_nums) 
+        {
+            for (int j = 0; j < 60; j++)                // Print a line after every 10 numbers except for the last row
+            {
+                cout << "-";
+            }
+            cout << endl;
         }
     }
 
@@ -91,19 +100,6 @@ bool isNumberGenerated(const vector<int> &numbers, int number){
         }
     return false;                                   // if number has not been generated yet
 }
-
-
-void printSortedNumbers(vector<int> &numbers) {         // &numbers so i can modify the original numbers vector instead of a copy, so i can change the vector directly
-    vector<int> sortedNumbers = numbers;                // Creates a copy of the original vector to sort
-    sort(sortedNumbers.begin(), sortedNumbers.end());
-
-    cout << "Sorted Numbers: ";
-    for (int x = 0; x < sortedNumbers.size(); x++) {
-        cout << color_red << sortedNumbers[x] << color_reset << " ";
-    }
-    cout << endl;
-}
-
 
 
 void generateAndSaveCard(int max_value, int card_number){                   // Function to save and generate a card with the values generated 
@@ -197,7 +193,8 @@ int main(){
         }
 
     char playAgain;
-    do {
+    do 
+    {
         int drawnNumber;
         int lastDrawnNumber = 0;
 
@@ -228,7 +225,8 @@ int main(){
             }
         }  
         else if (generator_type == 2) {  // Manual generator
-    do {
+    do 
+    {
         AmountCards_Conversion_to_corresponded_num(amount_nums);
         drawnNumber = Number_Generator_Bingo(amount_nums);
 
