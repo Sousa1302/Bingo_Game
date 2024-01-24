@@ -25,7 +25,7 @@ vector<int> drawnNumbers;
 void displayBingoTable(const vector<int> &drawnNumbers, int amount_nums) {           // const because this function is destined to only print numbers and not modify the vector itself
     cout << "Bingo Table:" << endl;
 
-    for (int i = 0; i <= amount_nums; i++) {
+    for (int i = 1; i <= amount_nums; i++) {
         bool isDrawn = find(drawnNumbers.begin(), drawnNumbers.end(), i) != drawnNumbers.end();
         
         if (isDrawn) {
@@ -141,16 +141,37 @@ int main(){
     srand(time(0));
 
     int amount_nums;
-    cout << "Choose the amount of numbers\n";
-    cout << "1. 75 nums \n2. 90 nums \n3. 100 nums\n";
-    cin >> amount_nums;
-
     int generator_type;
-    cout << "Choose the type of generator!\n";
-    cout << "1. Automatic \n2. Manual \n";
-    cin >> generator_type;
-
     int amount_cards;
+
+    do 
+    {
+        cout << "Choose the amount of numbers\n";
+        cout << "1. 75 nums \n2. 90 nums \n3. 100 nums\n";
+        cin >> amount_nums;
+
+        if (amount_nums != 1 && amount_nums != 2 && amount_nums != 3)
+        {
+            cout << "It must be a number between 1-3 !\n";
+            cout << "Choose again!\n";
+        }
+    } while (amount_nums != 1 && amount_nums != 2 && amount_nums != 3);
+    
+    
+    do 
+    {
+        cout << "Choose the type of generator!\n";
+        cout << "1. Automatic \n2. Manual \n";
+        cin >> generator_type;
+
+        if (generator_type != 1 && generator_type != 2)
+        {
+            cout << "It must be a number between 1-2 !\n";
+            cout << "Type again!\n";
+        }
+    } while (generator_type != 1 && generator_type != 2);
+    
+
     cout << "Type the amount of cards you want to generate: ";
     cin >> amount_cards;
 
@@ -231,9 +252,7 @@ int main(){
         system("clear || cls");
     } while (playAgain == 'y' || playAgain == 'Y');
 }
-
-
-    }   while (playAgain == 'y' || playAgain == 'Y');
+    } while (playAgain == 'y' || playAgain == 'Y');
 
     return 0;
 }
