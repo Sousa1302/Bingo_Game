@@ -1,256 +1,109 @@
-/**
- * @file bingo.cpp
- * @author Gonçalo Sousa
- * @brief Jogo do bingo
- * @version 0.9
- * @date 24 / 1 / 2024
-*/
-
-
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <algorithm>                        // Library to use "sort" so i can order the sorted numbers
-#include <unistd.h>                         // To use delays when generator type == automatic 
+#include <algorithm>
+#include <unistd.h>
 #include <iomanip>
 
 using namespace std;
 
-string color_red = "\u001b[31m";
-string color_reset = "\u001b[0m";
-int new_amount_value;
+const string COLOR_RED = "\u001b[31m";
+const string COLOR_RESET = "\u001b[0m";
 vector<int> drawnNumbers;
 
-// Generates a table on which are displayed the numbers already generated and the not generated ones
-void displayBingoTable(const vector<int> &drawnNumbers, int amount_nums) {           // const because this function is destined to only print numbers and not modify the vector itself
+void displayBingoTable(int max_value) {
     cout << "Bingo Table:\n" << endl;
-
-    for (int i = 1; i <= amount_nums; i++) {
+    for (int i = 1; i <= max_value; i++) {
         bool isDrawn = find(drawnNumbers.begin(), drawnNumbers.end(), i) != drawnNumbers.end();
-        
-        if (isDrawn) {
-            cout << color_red << setw(3) << i << color_reset;
-        } else {
-            cout << setw(3) << i;       // sets the width to 3 characters
-        }
-
-        if (i % 10 == 0 && i != 0) {  // Jumps lines when it gets to multiples of 10
-            cout << endl;
-        } else {
-            cout << " | ";
-        }
-
-        if (i % 10 == 0 && i != 0 && i < amount_nums) 
-        {
-            for (int j = 0; j < 60; j++)                // Print a line after every 10 numbers except for the last row
-            {
-                cout << "-";
-            }
-            cout << endl;
-        }
+        cout << (isDrawn ? COLOR_RED : "") << setw(3) << i << COLOR_RESET;
+        cout << ((i % 10 == 0) ? "\n" : " | ");
     }
-
     cout << endl;
 }
 
-
-// Generates x amount of cards
-int Number_Generator_Cards(int max_value){
+int generateRandomNumber(int max_value) {
     return rand() % max_value + 1;
 }
 
-int Number_Generator_Bingo(int max_amount){
-    if (max_amount == 1)
-        {
-            return rand() % 75 + 1;
-        }
-    if (max_amount == 2)
-        {
-            return rand() % 90 + 1;
-        }
-    if (max_amount == 3)
-        {
-            return rand() % 100 + 1;
-        }
-    return 0;
+int getMaxValue(int choice) {
+    switch (choice) {
+        case 1: return 75;
+        case 2: return 90;
+        case 3: return 100;
+        default: return 0;
+    }
 }
 
-
-int AmountCards_Conversion_to_corresponded_num(int conversion){
-    if (conversion == 1){
-            new_amount_value = 75;
-        }
-    if (conversion == 2){
-            new_amount_value = 90;
-        }
-    if (conversion == 3){
-            new_amount_value = 100;
-        }
-    return 0;
-
+bool isNumberGenerated(int number) {
+    return find(drawnNumbers.begin(), drawnNumbers.end(), number) != drawnNumbers.end();
 }
 
-bool isNumberGenerated(const vector<int> &numbers, int number){
-    for (int i = 0; i < numbers.size(); i++)
-        {
-            if (numbers[i] == number)
-                {
-                    return true;                            // if number has already been generated
-                }
-        }
-    return false;                                   // if number has not been generated yet
-}
-
-
-void generateAndSaveCard(int max_value, int card_number){                   // Function to save and generate a card with the values generated 
+void generateAndSaveCard(int max_value, int card_number) {
     ofstream file("Card" + to_string(card_number) + ".txt");
+    if (!file) {
+        cerr << "Erro ao criar ficheiro para o cartão " << card_number << endl;
+        return;
+    }
+    vector<int> cardNumbers;
+    for (int i = 0; i < 25; i++) {
+        int num = generateRandomNumber(max_value);
+        cardNumbers.push_back(num);
+        file << num << ((i % 5 == 4) ? "\n" : " | ");
+    }
+    file.close();
 
-    if (file.is_open()){
-            vector<int> cardNumbers;
-            for (int i = 0; i < 5; i++)
-                {
-                    for (int j = 0; j < 5; j++)
-                        {
-                            int num = Number_Generator_Cards(max_value);
-                            cardNumbers.push_back(num);
-                            file << num << " | ";
-                        }
-                    file << endl;
-                }
-            file.close();
-
-
-            cout << "Card " << card_number << " Numbers: ";                         // Defines the card number
-            for (int x = 0; x < cardNumbers.size(); x++)
-                {
-                    cout << cardNumbers[x] << " ";
-                }
-            cout << endl;
-        }
-    else{
-            cerr << "Unable to open file for card " << card_number << endl;
-        }
+    cout << "Cartão " << card_number << " números: ";
+    for (int num : cardNumbers) cout << num << " ";
+    cout << endl;
 }
 
-
-int main(){
-    srand(time(0));
-
-    int amount_nums;
-    int generator_type;
-    int amount_cards;
-
-    do 
-    {
-        cout << "Choose the amount of numbers\n";
-        cout << "1. 75 nums \n2. 90 nums \n3. 100 nums\n";
-        cin >> amount_nums;
-
-        if (amount_nums != 1 && amount_nums != 2 && amount_nums != 3)
-        {
-            cout << "It must be a number between 1-3 !\n";
-            cout << "Choose again!\n";
-        }
-    } while (amount_nums != 1 && amount_nums != 2 && amount_nums != 3);
-    
-    
-    do 
-    {
-        cout << "Choose the type of generator!\n";
-        cout << "1. Automatic \n2. Manual \n";
-        cin >> generator_type;
-
-        if (generator_type != 1 && generator_type != 2)
-        {
-            cout << "It must be a number between 1-2 !\n";
-            cout << "Type again!\n";
-        }
-    } while (generator_type != 1 && generator_type != 2);
-    
-
-    cout << "Type the amount of cards you want to generate: ";
-    cin >> amount_cards;
-
-    for (int i = 1; i <= amount_cards; i++){
-            switch (amount_nums)
-                {
-                case 1:
-                    generateAndSaveCard(75, i);
-                    break;
-
-                case 2:
-                    generateAndSaveCard(90, i);
-                    break;
-
-                case 3:
-                    generateAndSaveCard(100, i);
-                    break;
-
-                default:
-                    cout << "You must type a number between 1-3!\n";
-                    return 1;
-                }
-        }
-
+void playBingo(int max_value, bool automatic) {
+    int lastDrawnNumber = 0;
     char playAgain;
-    do 
-    {
+    do {
         int drawnNumber;
-        int lastDrawnNumber = 0;
-
-        if (generator_type == 1) {  // automatic generator
-            int intervalo = 2.5;    // 2 and a half seconds
-
-            AmountCards_Conversion_to_corresponded_num(amount_nums);
-
-            for (int x = 0; x < new_amount_value; x++) {
-                drawnNumber = Number_Generator_Bingo(amount_nums);
-
-                while (isNumberGenerated(drawnNumbers, drawnNumber)) {
-                    drawnNumber = Number_Generator_Bingo(amount_nums);
-                }
-
-                drawnNumbers.push_back(drawnNumber);
-
-                cout << endl;
-                cout << "Last drawn number: " << lastDrawnNumber << endl;
-                cout << "Drawn number: " << drawnNumber << endl;
-
-                displayBingoTable(drawnNumbers, new_amount_value);  
-
-                lastDrawnNumber = drawnNumber;
-
-                sleep(intervalo);
-                system("clear || cls");
-            }
-        }  
-        else if (generator_type == 2) {  // Manual generator
-    do 
-    {
-        AmountCards_Conversion_to_corresponded_num(amount_nums);
-        drawnNumber = Number_Generator_Bingo(amount_nums);
-
-        while (isNumberGenerated(drawnNumbers, drawnNumber)) {
-            drawnNumber = Number_Generator_Bingo(amount_nums);
-        }
-
+        do {
+            drawnNumber = generateRandomNumber(max_value);
+        } while (isNumberGenerated(drawnNumber));
         drawnNumbers.push_back(drawnNumber);
 
-        cout << endl;
-        cout << "Last drawn number: " << lastDrawnNumber << endl;
-        cout << "Drawn number: " << drawnNumber << endl;
-
+        cout << "\nÚltimo número: " << lastDrawnNumber << "\nNúmero sorteado: " << drawnNumber << endl;
+        displayBingoTable(max_value);
         lastDrawnNumber = drawnNumber;
 
-        displayBingoTable(drawnNumbers, new_amount_value);  
-
-        cout << "Do you want to play again? (y/n): ";
-        cin >> playAgain;
-        cout << endl;
-        system("clear || cls");
-    } while (playAgain == 'y' || playAgain == 'Y');
+        if (automatic) {
+            sleep(2);
+            system("clear || cls");
+        } else {
+            cout << "Continuar? (y/n): ";
+            cin >> playAgain;
+        }
+    } while (automatic || playAgain == 'y' || playAgain == 'Y');
 }
-    } while (playAgain == 'y' || playAgain == 'Y');
 
+int main() {
+    srand(time(0));
+    int choice;
+    do {
+        cout << "Escolhe a quantidade de números:\n1. 75\n2. 90\n3. 100\n";
+        cin >> choice;
+    } while (choice < 1 || choice > 3);
+    
+    int max_value = getMaxValue(choice);
+    
+    int generator_type;
+    do {
+        cout << "Tipo de gerador:\n1. Automático\n2. Manual\n";
+        cin >> generator_type;
+    } while (generator_type < 1 || generator_type > 2);
+    
+    int amount_cards;
+    cout << "Número de cartões a gerar: ";
+    cin >> amount_cards;
+    for (int i = 1; i <= amount_cards; i++) {
+        generateAndSaveCard(max_value, i);
+    }
+    
+    playBingo(max_value, generator_type == 1);
     return 0;
 }
