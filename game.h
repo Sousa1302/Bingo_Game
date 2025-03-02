@@ -6,8 +6,7 @@
 using namespace std;
 
 extern const string COLOR_RED, COLOR_RESET;
-int rangeNumsGenerated;
-vector<int> drawnNumbers;
+extern vector<int> drawnNumbers;
 
 #endif
 
