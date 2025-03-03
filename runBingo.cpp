@@ -2,6 +2,7 @@
 #include "getMaxValue.h"
 #include "generateSaveCard.h"
 #include "playBingo.h"
+#include "iomanip"
 
 /**
  * @brief Runs the Bingo game setup and starts the game.
@@ -15,14 +16,16 @@ void runBingo(){
     do{
         cout << "Choose an amount of numbers: \n1. 75 \n2. 90 \n3. 100 \n";
         cin >> choice;
+        system("clear");
     } while (choice < 1 || choice > 3);
 
     int max_value = getMaxValue(choice);
 
     int generator_type;
     do{
-        cout << "Type of generator: \n1. Automatic \n2.Manual \n";
+        cout << "Type of generator: \n1. Automatic \n2. Manual \n";
         cin >> generator_type;
+        system("clear");
     } while (generator_type < 1 || generator_type > 2);
 
     int amount_cards;

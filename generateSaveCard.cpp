@@ -26,7 +26,4 @@ void generateSaveCard(int max_value, int card_number){
     }
     file.close();
 
-    cout << "Card " << card_number << "Numbers: ";
-    for(int num : cardNumbers) cout << num << " ";
-    cout << endl;
 }

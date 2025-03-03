@@ -3,6 +3,7 @@
 #include "displayBingoTable.h"
 #include "isNumGenerated.h"
 #include "generateRandNum.h"
+#include "espeak.h"
 
 /**
  * @brief Starts and manages the Bingo game.
@@ -20,9 +21,14 @@ void playBingo(int max_value, bool automatic){
         } while (isNumGenerated(drawnNumber));
         drawnNumbers.push_back(drawnNumber);
 
-        cout << "\nÚltimo número: " << lastDrawnNumber << "\nNúmero sorteado: " << drawnNumber << endl;
+        cout << "\nLast Number sorted: " << lastDrawnNumber << endl;
+        cout << "Sorted Number: " << drawnNumber << endl;
+
         displayBingoTable(max_value);
         lastDrawnNumber = drawnNumber;
+        
+        string toVoiceNum = to_string(drawnNumber);
+        espeak(toVoiceNum);
 
         if (automatic) {
             sleep(2);
