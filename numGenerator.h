@@ -8,7 +8,7 @@ class NumGenerator : public BingoGame{
         int min, max;
         
     public:
-        NumGenerator(int minVal, int maxVal);
+        NumGenerator(int maxVal);
 
         int generate();
 };

@@ -9,10 +9,12 @@
  *   verifying the game cards and overall simulate a real life scenario of a bingo game with the granny's 
  * 
  */
+#include "bingoGame.h"
+#include <ctime>
 
-#include "runBingo.h"
-
-int main(){
-    runBingo();
+int main() {
+    srand(time(0));
+    BingoGame game;
+    game.runBingo(); 
     return 0;
 }

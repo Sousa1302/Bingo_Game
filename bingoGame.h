@@ -1,26 +1,22 @@
 #ifndef BINGOGAME_H
 #define BINGOGAME_H
 
-#include <iostream>
-#include <set>
 #include <vector>
-
+#include <string>
+#include "player.h"
+#include "bingoCard.h" 
 using namespace std;
 
-class BingoGame{
-    private:
-        const string COLOR_RED, COLOR_RESET;
-        set<int> drawnNumbers;
-        vector<string> players;
-        int cardSize;
-
-        bool isNumGenerated(int num);
-
-    public:
-        void   runBingo();
-        int    generateRandNum();
-        string checkWinner();
-
+class BingoGame {
+private:
+    vector<int> drawnNumbers;
+public:
+    vector<Player> players;
+    void runBingo(); 
+    int generateRandNum(int max_value);
+    bool checkWinner();
+    int getMaxValue(int choice); 
+    void playBingo(int max_value, bool isAutomatic); 
 };
 
 #endif

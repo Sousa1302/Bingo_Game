@@ -1,19 +1,20 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <bingoGame.h>
-#include <bingoCard.h>
+#include <string>
+#include "bingoCard.h"
+using namespace std;
 
-class Player :  public BingoGame{
-    private:
-        string name;
-        BingoCard card;
-    public:
-        Player(string playerName);
+class Player {
+public:
+    Player(string playerName, int cardSize, int max_value, int card_number); 
+    int markNumber(int num);
+    bool hasBingo() const;
+    string getName() const;
 
-        int    markNumber(int num);
-        bool   hasBingo();
-        string getName();
+private:
+    string name;
+    BingoCard card;
 };
 
 #endif

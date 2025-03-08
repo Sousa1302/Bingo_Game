@@ -1,4 +1,6 @@
 #include "generateRandNum.h"
+#include <iostream>
+using namespace std;
 
 /**
  * @brief Generates a random number between 1 and the specified maximum value.

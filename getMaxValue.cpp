@@ -16,7 +16,7 @@ int getMaxValue(int choice){
     switch(choice){
         case 1 : return 75;
         case 2 : return 90;
-        case 3 : return 100;
+        case 3 : return 99;
         default : return 0;
     }
 }
