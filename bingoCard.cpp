@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include "game.h"
+#include "setFileReadOnly.h"
 using namespace std;
 
 BingoCard::BingoCard(int cardSize, int max_value, int card_number) : size(cardSize) {
@@ -26,13 +27,9 @@ void BingoCard::generateSaveCard(int max_value, int card_number) {
     numbers.assign(cardNumbers.begin(), cardNumbers.begin() + (size * size));
     sort(numbers.begin(), numbers.end()); 
 
+    string filename = "Card_" + to_string(card_number) + ".txt";
+    ofstream file(filename);
     
-    ofstream file("Card_" + to_string(card_number) + ".txt");
-    if (!file) {
-        cerr << "Error trying to create the bingo card: " << card_number << endl;
-        return;
-    }
-
     file << "+-----+-----+-----+-----+-----+\n";
     for (int x = 0; x < size * size; x++) {
         if (x % size == 0) file << "| "; 
@@ -44,6 +41,7 @@ void BingoCard::generateSaveCard(int max_value, int card_number) {
         if (x % size == size - 1) file << "\n+-----+-----+-----+-----+-----+\n";
     }
     file.close();
+    setFileToReadOnly(filename);
 }
 
 int BingoCard::markNum(int num) {
@@ -69,7 +67,8 @@ void BingoCard::fisherYatesShuffle(vector<int>& vec) {
 void BingoCard::displayBingoTable(int max_value, const vector<int>& drawnNumbers) {
     string separator = "+===========================================================+";
     
-    cout << setw(3) << "Bingo Table:\n" << endl << separator << endl;
+    cout << endl;
+    cout << setw(37) << "Bingo Table\n" << endl << separator << endl;
     for (int x = 1; x <= max_value; x++) {
         
         if (x % 10 == 1) {

@@ -10,6 +10,7 @@ using namespace std;
 class BingoGame {
 private:
     vector<int> drawnNumbers;
+    int checkCardForWin(const string& filename, const vector<int>& drawnNumbers);
 public:
     vector<Player> players;
     void runBingo(); 
@@ -17,6 +18,7 @@ public:
     bool checkWinner();
     int getMaxValue(int choice); 
     void playBingo(int max_value, bool isAutomatic); 
+    
 };
 
 #endif

@@ -3,10 +3,15 @@
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
+#include "espeak.h"
 using namespace std;
 
 void BingoGame::runBingo() {
     srand(time(0));
+
+    string welcomePhrase = "Welcome to the grannay's paradise....i mean BINGOOOOOOOOOOO !";
+    cout << welcomePhrase << endl;
+    espeak(welcomePhrase);
 
     int choice;
     do {
@@ -45,12 +50,13 @@ void BingoGame::runBingo() {
         }
     }while(amount_cards < 2);
 
-    // Cria os jogadores e seus cartões
+
     for (int x = 1; x <= amount_cards; x++) {
         string playerName = "Player " + to_string(x);
         players.push_back(Player(playerName, 5, max_value, x)); 
     }
 
+    system("clear");
     playBingo(max_value, generator_type == 1);
 }
 
@@ -61,7 +67,7 @@ int BingoGame::generateRandNum(int max_value) {
 bool BingoGame::checkWinner() {
     for (Player& player : players) {
         if (player.hasBingo()) {
-            cout << "Parabéns, " << player.getName() << " venceu!" << endl;
+            cout << "Congrats, " << player.getName() << " won!" << endl;
             return true;
         }
     }
@@ -76,6 +82,66 @@ int BingoGame::getMaxValue(int choice) {
     }
 }
 
+int BingoGame::checkCardForWin(const string& filename, const vector<int>& drawnNumbers) {
+    ifstream file(filename);
+    if (!file) {
+        cerr << "Erro ao abrir o arquivo: " << filename << endl;
+        return 0; 
+    }
+
+    vector<vector<int>> card(5, vector<int>(5)); 
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            file >> card[i][j];
+        }
+    }
+
+    
+    for (int i = 0; i < 5; i++) {
+        bool lineComplete = true;
+        for (int j = 0; j < 5; j++) {
+            if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
+                lineComplete = false;
+                break;
+            }
+        }
+        if (lineComplete) {
+            return 1; 
+        }
+    }
+
+    
+    for (int j = 0; j < 5; j++) {
+        bool columnComplete = true;
+        for (int i = 0; i < 5; i++) {
+            if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
+                columnComplete = false;
+                break;
+            }
+        }
+        if (columnComplete) {
+            return 2; 
+        }
+    }
+
+    
+    bool bingoComplete = true;
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
+                bingoComplete = false;
+                break;
+            }
+        }
+        if (!bingoComplete) break;
+    }
+    if (bingoComplete) {
+        return 3; 
+    }
+
+    return 0; 
+}
+
 void BingoGame::playBingo(int max_value, bool isAutomatic) {
     vector<int> drawnNumbers;
 
@@ -83,26 +149,55 @@ void BingoGame::playBingo(int max_value, bool isAutomatic) {
         int num = generateRandNum(max_value);
         if (find(drawnNumbers.begin(), drawnNumbers.end(), num) == drawnNumbers.end()) {
             drawnNumbers.push_back(num);
-            cout << "Número sorteado: " << num << endl;
+            cout << "Number sorted: " << num << endl;
+
+            if (!drawnNumbers.empty()) {
+                cout << "Last number sorted: " << drawnNumbers[drawnNumbers.size() - 2] << endl;
+            } else {
+                cout << "Last number sorted: " << endl;
+            }
 
             
             BingoCard tempCard(5, max_value, 1); 
             tempCard.displayBingoTable(max_value, drawnNumbers);
             
+            espeak(to_string(num));
             sleep(2);
             
+            system("clear");
+
+            bool bingoComplete = false;
+            for (int i = 1; i <= players.size(); i++) {
+                string filename = "Card_" + to_string(i) + ".txt";
+                int result = checkCardForWin(filename, drawnNumbers);
+
+                if (result == 1) {
+                    cout << "Player " << i << " has completed a row!" << endl;
+                } else if (result == 2) {
+                    cout << "Player " << i << " has completed a column!" << endl;
+                } else if (result == 3) {
+                    cout << "Player " << i << " shouted!" << endl;
+                    bingoComplete = true;
+                    break; 
+                }
+            }
+
+            if (bingoComplete) {
+                break; 
+            }
+
+
             for (Player& player : players) {
                 player.markNumber(num);
             }
 
-            
             if (checkWinner()) {
-                cout << "Bingo! Temos um vencedor!" << endl;
+                cout << "Bingo! We have a winner!" << endl;
                 break;
             }
 
             if (!isAutomatic) {
-                cout << "Pressione Enter para sortear o próximo número...";
+                cout << "Press any key to continue: ";
                 cin.ignore();
                 cin.get();
             }
