@@ -14,7 +14,35 @@ Bingo is a game where numbers will be sorted and if that exact number matches th
 
 - Function 1 -> Card generator
 - Function 2 -> Check winner method
-- Function 3 -> 50 / 90 pool 
+- Function 3 -> 50 / 90 pool
+- Function 4 -> Robo voice announcing the numbers
+  
+
+## 🖼️ Screenshots
+
+Some screenshots of the game in action:
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="/home/sousa1302/Pictures/Screenshots/bingoTable.png" width="100%" alt="Captura de Tela 1"/>
+      <br />
+      <sub><b>Bingo Pool</b></sub>
+    </td>
+    <td align="center">
+      <img src="/home/sousa1302/Pictures/Screenshots/cards.png" width="100%" alt="Captura de Tela 2"/>
+      <br />
+      <sub><b>Generation of Bingo Cards</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="/home/sousa1302/Pictures/Screenshots/checkWinner.png" width="100%" alt="Captura de Tela 3"/>
+      <br />
+      <sub><b>Check Winner Method</b></sub>
+    </td>
+  </tr>
+</table>
 
 ### Developed by
 <table>
