@@ -6,15 +6,26 @@
 #include "setFileReadOnly.h"
 using namespace std;
 
+/**
+ * @brief Constructor for the BingoCard class.
+ * @param cardSize The size of the bingo card (5 for a 5x5 card).
+ * @param max_value The maximum number that can appear on the card.
+ * @param card_number The unique identifier for the bingo card.
+ * @details Initializes the card size and generates/saves the bingo card.
+ */
 BingoCard::BingoCard(int cardSize, int max_value, int card_number) : size(cardSize) {
     numbers.resize(size * size);
     generateSaveCard(max_value, card_number);
 }
 
-bool BingoCard::isNumOnCard(int num) const {
-    return find(numbers.begin(), numbers.end(), num) != numbers.end();
-}
 
+/**
+ * @brief Generates a bingo card, saves it to a file, and sets the file to read-only.
+ * @param max_value The maximum number that can appear on the card.
+ * @param card_number The unique identifier for the bingo card.
+ * @details Generates a shuffled list of numbers, selects the required amount for the card,
+ *          sorts them, and saves the card in a formatted text file.
+ */
 void BingoCard::generateSaveCard(int max_value, int card_number) {
     vector<int> cardNumbers;
     for (int x = 1; x <= max_value; x++) {
@@ -44,19 +55,21 @@ void BingoCard::generateSaveCard(int max_value, int card_number) {
     setFileToReadOnly(filename);
 }
 
-int BingoCard::markNum(int num) {
-    auto it = find(numbers.begin(), numbers.end(), num);
-    if (it != numbers.end()) {
-        *it = -1; 
-        return 1; 
-    }
-    return 0; 
-}
 
+/**
+ * @brief Checks if the bingo card is complete (all numbers marked).
+ * @return True if all numbers on the card are marked as -1, false otherwise.
+ */
 bool BingoCard::isComplete() const {
     return all_of(numbers.begin(), numbers.end(), [](int num) { return num == -1; });
 }
 
+
+/**
+ * @brief Shuffles a vector of integers using the Fisher-Yates algorithm.
+ * @param vec The vector to shuffle.
+ * @details Randomly shuffles the elements of the vector to ensure randomness.
+ */
 void BingoCard::fisherYatesShuffle(vector<int>& vec) {
     for (int i = vec.size() - 1; i > 0; i--) {
         int j = rand() % (i + 1);
@@ -64,6 +77,13 @@ void BingoCard::fisherYatesShuffle(vector<int>& vec) {
     }
 }
 
+
+/**
+ * @brief Displays the bingo table with drawn numbers highlighted.
+ * @param max_value The maximum number that can appear on the table.
+ * @param drawnNumbers A vector containing the numbers that have been drawn.
+ * @details Displays a formatted table of numbers, highlighting those that have been drawn.
+ */
 void BingoCard::displayBingoTable(int max_value, const vector<int>& drawnNumbers) {
     string separator = "+===========================================================+";
     

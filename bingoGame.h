@@ -10,7 +10,7 @@ using namespace std;
 class BingoGame {
 private:
     vector<int> drawnNumbers;
-    int checkCardForWin(const string& filename, const vector<int>& drawnNumbers);
+    int checkCardForWin(const vector<int>& drawnNumbers);
 public:
     vector<Player> players;
     void runBingo(); 

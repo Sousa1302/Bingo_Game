@@ -26,6 +26,8 @@ void BingoGame::runBingo() {
         }
     } while (choice < 1 || choice > 2);
 
+    system("clear");
+
     int max_value = getMaxValue(choice);
 
     int generator_type;
@@ -39,6 +41,8 @@ void BingoGame::runBingo() {
             cout << "Invalid option, choose option 1 or 2.\n";
         }
     } while (generator_type < 1 || generator_type > 2);
+
+    system("clear");
 
     int amount_cards;
     do{
@@ -82,64 +86,82 @@ int BingoGame::getMaxValue(int choice) {
     }
 }
 
-int BingoGame::checkCardForWin(const string& filename, const vector<int>& drawnNumbers) {
-    ifstream file(filename);
-    if (!file) {
-        cerr << "Erro ao abrir o arquivo: " << filename << endl;
-        return 0; 
+int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
+    cout << "Números sorteados: ";
+    for (int num : drawnNumbers) {
+        cout << num << " ";
     }
+    cout << endl;
 
-    vector<vector<int>> card(5, vector<int>(5)); 
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            file >> card[i][j];
-        }
-    }
+    for (int playerIndex = 1; playerIndex <= players.size(); playerIndex++) {
+        string filename = "Card_" + to_string(playerIndex) + ".txt";
+        ifstream file(filename);
 
-    
-    for (int i = 0; i < 5; i++) {
-        bool lineComplete = true;
-        for (int j = 0; j < 5; j++) {
-            if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
-                lineComplete = false;
-                break;
-            }
+        if (!file.is_open()) {
+            cerr << "Erro ao abrir o arquivo: " << filename << endl;
+            continue;
         }
-        if (lineComplete) {
-            return 1; 
-        }
-    }
 
-    
-    for (int j = 0; j < 5; j++) {
-        bool columnComplete = true;
+        vector<vector<int>> card(5, vector<int>(5));
+        cout << "Lendo cartão do jogador " << playerIndex << " (" << filename << "):" << endl;
         for (int i = 0; i < 5; i++) {
-            if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
-                columnComplete = false;
-                break;
+            for (int j = 0; j < 5; j++) {
+                file >> card[i][j];
+                cout << card[i][j] << " ";
+            }
+            cout << endl;
+        }
+
+        // Verifica BINGO
+        bool bingoComplete = true;
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
+                    bingoComplete = false;
+                    break;
+                }
+            }
+            if (!bingoComplete) break;
+        }
+
+        if (bingoComplete) {
+            cout << "BINGO detectado no cartão " << filename << "!" << endl;
+            return 2;
+        }
+
+        // Verifica linhas
+        for (int i = 0; i < 5; i++) {
+            bool lineComplete = true;
+            for (int j = 0; j < 5; j++) {
+                if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
+                    lineComplete = false;
+                    break;
+                }
+            }
+            if (lineComplete) {
+                cout << "Linha completa detectada no cartão " << filename << "!" << endl;
+                return 1;
             }
         }
-        if (columnComplete) {
-            return 2; 
-        }
-    }
 
-    
-    bool bingoComplete = true;
-    for (int i = 0; i < 5; i++) {
+        // Verifica colunas
         for (int j = 0; j < 5; j++) {
-            if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
-                bingoComplete = false;
-                break;
+            bool columnComplete = true;
+            for (int i = 0; i < 5; i++) {
+                if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
+                    columnComplete = false;
+                    break;
+                }
+            }
+            if (columnComplete) {
+                cout << "Coluna completa detectada no cartão " << filename << "!" << endl;
+                return 1;
             }
         }
-        if (!bingoComplete) break;
-    }
-    if (bingoComplete) {
-        return 3; 
     }
 
-    return 0; 
+    cout << "Nenhum jogador venceu." << endl;
+    return 0;
 }
 
 void BingoGame::playBingo(int max_value, bool isAutomatic) {
@@ -156,7 +178,8 @@ void BingoGame::playBingo(int max_value, bool isAutomatic) {
             } else {
                 cout << "Last number sorted: " << endl;
             }
-
+            
+            checkCardForWin(drawnNumbers);
             
             BingoCard tempCard(5, max_value, 1); 
             tempCard.displayBingoTable(max_value, drawnNumbers);
@@ -164,43 +187,14 @@ void BingoGame::playBingo(int max_value, bool isAutomatic) {
             espeak(to_string(num));
             sleep(2);
             
-            system("clear");
-
-            bool bingoComplete = false;
-            for (int i = 1; i <= players.size(); i++) {
-                string filename = "Card_" + to_string(i) + ".txt";
-                int result = checkCardForWin(filename, drawnNumbers);
-
-                if (result == 1) {
-                    cout << "Player " << i << " has completed a row!" << endl;
-                } else if (result == 2) {
-                    cout << "Player " << i << " has completed a column!" << endl;
-                } else if (result == 3) {
-                    cout << "Player " << i << " shouted!" << endl;
-                    bingoComplete = true;
-                    break; 
-                }
-            }
-
-            if (bingoComplete) {
-                break; 
-            }
-
-
-            for (Player& player : players) {
-                player.markNumber(num);
-            }
-
-            if (checkWinner()) {
-                cout << "Bingo! We have a winner!" << endl;
-                break;
-            }
-
+            
+            
             if (!isAutomatic) {
                 cout << "Press any key to continue: ";
                 cin.ignore();
                 cin.get();
             }
+            system("clear");
         }
     }
 }
