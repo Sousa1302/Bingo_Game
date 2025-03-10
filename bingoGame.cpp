@@ -4,6 +4,7 @@
 #include <ctime>
 #include <unistd.h>
 #include "espeak.h"
+#include <unordered_set>
 using namespace std;
 
 void BingoGame::runBingo() {
@@ -45,19 +46,18 @@ void BingoGame::runBingo() {
     system("clear");
 
     int amount_cards;
-    do{
+    do {
         cout << "Number of cards you wish to generate: ";
         cin >> amount_cards;
 
-        if(amount_cards < 2){
+        if (amount_cards < 2) {
             cout << "There must be at least two players playing !\n";
         }
-    }while(amount_cards < 2);
-
+    } while (amount_cards < 2);
 
     for (int x = 1; x <= amount_cards; x++) {
         string playerName = "Player " + to_string(x);
-        players.push_back(Player(playerName, 5, max_value, x)); 
+        players.push_back(Player(playerName, 5, max_value, x));
     }
 
     system("clear");
@@ -75,93 +75,85 @@ bool BingoGame::checkWinner() {
             return true;
         }
     }
-    return false; 
+    return false;
 }
 
 int BingoGame::getMaxValue(int choice) {
     switch (choice) {
         case 1: return 50;
         case 2: return 90;
-        default: return 0; 
+        default: return 0;
     }
 }
 
 int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
-    cout << "Números sorteados: ";
-    for (int num : drawnNumbers) {
-        cout << num << " ";
-    }
-    cout << endl;
+    unordered_set<int> drawnSet(drawnNumbers.begin(), drawnNumbers.end());
 
     for (int playerIndex = 1; playerIndex <= players.size(); playerIndex++) {
         string filename = "Card_" + to_string(playerIndex) + ".txt";
         ifstream file(filename);
 
         if (!file.is_open()) {
-            cerr << "Erro ao abrir o arquivo: " << filename << endl;
+            cerr << "Error: Could not open file: " << filename << endl;
             continue;
         }
 
         vector<vector<int>> card(5, vector<int>(5));
-        cout << "Lendo cartão do jogador " << playerIndex << " (" << filename << "):" << endl;
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                file >> card[i][j];
-                cout << card[i][j] << " ";
-            }
-            cout << endl;
-        }
+        string line;
+        int row = 0;
 
-        // Verifica BINGO
-        bool bingoComplete = true;
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
-                    bingoComplete = false;
-                    break;
+        while (getline(file, line)) {
+            
+            if (line.find("+---") != string::npos) {
+                continue;
+            }
+
+            
+            line.erase(remove(line.begin(), line.end(), '|'), line.end());
+            stringstream ss(line);
+            int num;
+            int col = 0;
+
+            while (ss >> num) {
+                if (row < 5 && col < 5) {
+                    card[row][col] = num;
+                    col++;
                 }
             }
-            if (!bingoComplete) break;
+            row++;
         }
+        
 
-        if (bingoComplete) {
-            cout << "BINGO detectado no cartão " << filename << "!" << endl;
-            return 2;
-        }
-
-        // Verifica linhas
         for (int i = 0; i < 5; i++) {
             bool lineComplete = true;
             for (int j = 0; j < 5; j++) {
-                if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
+                if (drawnSet.find(card[i][j]) == drawnSet.end()) {
                     lineComplete = false;
                     break;
                 }
             }
             if (lineComplete) {
-                cout << "Linha completa detectada no cartão " << filename << "!" << endl;
-                return 1;
+                cout << "Player with card " << playerIndex << " completed a line!" << endl;
+                return playerIndex; 
             }
         }
 
-        // Verifica colunas
+        
         for (int j = 0; j < 5; j++) {
             bool columnComplete = true;
             for (int i = 0; i < 5; i++) {
-                if (find(drawnNumbers.begin(), drawnNumbers.end(), card[i][j]) == drawnNumbers.end()) {
+                if (drawnSet.find(card[i][j]) == drawnSet.end()) {
                     columnComplete = false;
                     break;
                 }
             }
             if (columnComplete) {
-                cout << "Coluna completa detectada no cartão " << filename << "!" << endl;
-                return 1;
+                cout << "Player with card " << playerIndex << " completed a column!" << endl;
+                return playerIndex; 
             }
         }
     }
-
-    cout << "Nenhum jogador venceu." << endl;
-    return 0;
+    return 0; 
 }
 
 void BingoGame::playBingo(int max_value, bool isAutomatic) {
@@ -171,24 +163,26 @@ void BingoGame::playBingo(int max_value, bool isAutomatic) {
         int num = generateRandNum(max_value);
         if (find(drawnNumbers.begin(), drawnNumbers.end(), num) == drawnNumbers.end()) {
             drawnNumbers.push_back(num);
-            cout << "Number sorted: " << num << endl;
+            cout << "Number drawn: " << num << endl;
 
-            if (!drawnNumbers.empty()) {
-                cout << "Last number sorted: " << drawnNumbers[drawnNumbers.size() - 2] << endl;
-            } else {
-                cout << "Last number sorted: " << endl;
+            if (drawnNumbers.size() > 1) {
+                cout << "Last number drawn: " << drawnNumbers[drawnNumbers.size() - 2] << endl;
             }
-            
-            checkCardForWin(drawnNumbers);
-            
-            BingoCard tempCard(5, max_value, 1); 
+
+            int winner = checkCardForWin(drawnNumbers);
+            if (winner > 0) {
+                system("clear");
+                cout << "Player " << winner << " wins!" << endl;
+                sleep(3);
+                break; 
+            }
+
+            BingoCard tempCard(5, max_value, 1);
             tempCard.displayBingoTable(max_value, drawnNumbers);
-            
+
             espeak(to_string(num));
             sleep(2);
-            
-            
-            
+
             if (!isAutomatic) {
                 cout << "Press any key to continue: ";
                 cin.ignore();

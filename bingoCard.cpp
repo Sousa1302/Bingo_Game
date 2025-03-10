@@ -44,11 +44,7 @@ void BingoCard::generateSaveCard(int max_value, int card_number) {
     file << "+-----+-----+-----+-----+-----+\n";
     for (int x = 0; x < size * size; x++) {
         if (x % size == 0) file << "| "; 
-        if (x == (size * size) / 2) {
-            file << setw(3) << "C++" << " | "; 
-        } else {
             file << setw(3) << numbers[x] << " | "; 
-        }
         if (x % size == size - 1) file << "\n+-----+-----+-----+-----+-----+\n";
     }
     file.close();
