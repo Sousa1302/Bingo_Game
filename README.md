@@ -25,19 +25,19 @@ Some screenshots of the game in action:
 <table>
   <tr>
     <td align="center">
-      <img src="/home/sousa1302/Pictures/Screenshots/bingoTable.png" width="100%" alt="Captura de Tela 1"/>
+      <img src="assets/screenshots/bingoTable.png" width="100%" alt="Captura de Tela 1"/>
       <br />
       <sub><b>Bingo Pool</b></sub>
     </td>
     <td align="center">
-      <img src="/home/sousa1302/Pictures/Screenshots/cards.png" width="100%" alt="Captura de Tela 2"/>
+      <img src="assets/screenshots/cards.png" width="100%" alt="Captura de Tela 2"/>
       <br />
       <sub><b>Generation of Bingo Cards</b></sub>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="/home/sousa1302/Pictures/Screenshots/checkWinner.png" width="100%" alt="Captura de Tela 3"/>
+      <img src="assets/screenshots/checkWinner.png" width="100%" alt="Captura de Tela 3"/>
       <br />
       <sub><b>Check Winner Method</b></sub>
     </td>
