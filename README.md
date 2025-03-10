@@ -21,13 +21,13 @@ Bingo is a game where numbers will be sorted and if that exact number matches th
   <tr>
     <td align="center">
       <a href="https://github.com/Sousa1302">
-        <img src="https://github.com/Sousa1302.png" width="100px/><br />
+        <img src="https://github.com/Sousa1302.png" width="100px;" alt="Foto do Gonçalo Sousa"/><br />
         <sub><b>Gonçalo Sousa</b></sub>
       </a>
     </td>
     <td align="center">
       <a href="https://github.com/goncalobranco299">
-        <img src="https://github.com/goncalobranco299.png" width="100px/><br />
+        <img src="https://github.com/goncalobranco299.png" width="100px;" alt="Foto do Gonçalo Branco"/><br />
         <sub><b>Gonçalo Branco</b></sub>
       </a>
     </td>
