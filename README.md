@@ -8,7 +8,7 @@ Here, you will find everything your looking for to know more about this wonderfu
 
 ## 🎮 About the game
 
-Bingo is game where numbers will be sorted and if that exact number matches the one you have on your card, you're one step closer to winning. The main goal is to fill out your card, depending on the numbers being sorted.
+Bingo is a game where numbers will be sorted and if that exact number matches the one you have on your card, you're one step closer to winning. The main goal is to fill out your card, depending on the numbers being sorted.
 
 ### Main Functionalities
 
