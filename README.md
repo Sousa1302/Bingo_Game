@@ -1,34 +1,17 @@
 # BINGO
 
 ![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-Bem-vindo ao repositório do **Nome do Jogo**! Este é um jogo incrível desenvolvido em C++ que combina [breve descrição do jogo, ex: "ação, estratégia e diversão"]. Aqui você encontrará tudo o que precisa para compilar, executar e contribuir para o projeto.
+Welcome to the BingoGame repository! This is game developed based on the traditional Bingo game [You can play with your friends and family, the bingo game is able to generate new cards anytime you want to play]. Here, you will find everything your looking for to know more about this wonderful game.
 
-## 🎮 Sobre o Jogo
+## 🎮 About the game
 
-**Nome do Jogo** é um jogo [descreva o gênero do jogo, ex: "de plataforma 2D"] onde o objetivo é [descreva o objetivo principal do jogo]. Com gráficos [descreva os gráficos, ex: "pixel art"] e uma trilha sonora envolvente, o jogo oferece uma experiência única para os jogadores.
+Bingo is game [where numbers will be sorted and if that exact number matches the one you have on your card, you're one step closer to winning] where the main goal is to [fill out your card, depending on the numbers being sorted].
 
-### Funcionalidades Principais
+### Main Functionalities
 
-- [Funcionalidade 1, ex: "Movimentação fluida e responsiva"]
-- [Funcionalidade 2, ex: "Sistema de pontuação e ranking"]
-- [Funcionalidade 3, ex: "Multiplayer local"]
-- [Funcionalidade 4, ex: "Diversos níveis desafiadores"]
+- [Function 1, "Card generator"]
+- [Function 2, "Check winner method"]
+- [Function 3, "50 / 90 pool available"]
 
-## 🛠️ Como Compilar e Executar
 
-Para compilar e executar o jogo, siga os passos abaixo:
-
-### Pré-requisitos
-
-- [Compilador C++, ex: "g++"]
-- [Bibliotecas necessárias, ex: "SFML, SDL, etc."]
-- [Outras dependências, se houver]
-
-### Compilação
-
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/nome-do-jogo.git
-   cd nome-do-jogo
