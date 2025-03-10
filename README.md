@@ -12,8 +12,8 @@ Bingo is game where numbers will be sorted and if that exact number matches the 
 
 ### Main Functionalities
 
-- [Function 1, "Card generator"]
-- [Function 2, "Check winner method"]
-- [Function 3, "50 / 90 pool available"]
+- Function 1, Card generator
+- Function 2, Check winner method
+- Function 3, 50 / 90 pool available
 
 
