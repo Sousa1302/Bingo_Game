@@ -14,6 +14,23 @@ Bingo is game where numbers will be sorted and if that exact number matches the 
 
 - Function 1 -> Card generator
 - Function 2 -> Check winner method
-- Function 3 -> / 90 pool available
+- Function 3 -> 50 / 90 pool 
 
+### Developed by
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Sousa1302">
+        <img src="https://github.com/Sousa1302.png" width="100px/><br />
+        <sub><b>Gonçalo Sousa</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/goncalobranco299">
+        <img src="https://github.com/goncalobranco299.png" width="100px/><br />
+        <sub><b>Gonçalo Branco</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
 
