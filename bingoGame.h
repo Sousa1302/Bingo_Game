@@ -15,7 +15,6 @@ public:
     vector<Player> players;
     void runBingo(); 
     int generateRandNum(int max_value);
-    bool checkWinner();
     int getMaxValue(int choice); 
     void playBingo(int max_value, bool isAutomatic); 
     

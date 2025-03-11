@@ -7,9 +7,8 @@ using namespace std;
 
 class Player {
 public:
-    Player(string playerName, int cardSize, int max_value, int card_number); 
-    bool hasBingo() const;
-    string getName() const;
+    Player(int cardSize, int max_value, int card_number); 
+
 
 private:
     string name;

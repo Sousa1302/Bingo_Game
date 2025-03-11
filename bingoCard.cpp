@@ -53,15 +53,6 @@ void BingoCard::generateSaveCard(int max_value, int card_number) {
 
 
 /**
- * @brief Checks if the bingo card is complete (all numbers marked).
- * @return True if all numbers on the card are marked as -1, false otherwise.
- */
-bool BingoCard::isComplete() const {
-    return all_of(numbers.begin(), numbers.end(), [](int num) { return num == -1; });
-}
-
-
-/**
  * @brief Shuffles a vector of integers using the Fisher-Yates algorithm.
  * @param vec The vector to shuffle.
  * @details Randomly shuffles the elements of the vector to ensure randomness.

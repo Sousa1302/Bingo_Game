@@ -5,10 +5,12 @@
 #include <unistd.h>
 #include "espeak.h"
 #include <unordered_set>
+
 using namespace std;
 
 void BingoGame::runBingo() {
     srand(time(0));
+    system("clear");
 
     string welcomePhrase = "Welcome to the grannay's paradise....i mean BINGOOOOOOOOOOO !";
     cout << welcomePhrase << endl;
@@ -57,7 +59,7 @@ void BingoGame::runBingo() {
 
     for (int x = 1; x <= amount_cards; x++) {
         string playerName = "Player " + to_string(x);
-        players.push_back(Player(playerName, 5, max_value, x));
+        players.push_back(Player(5, max_value, x));
     }
 
     system("clear");
@@ -68,15 +70,6 @@ int BingoGame::generateRandNum(int max_value) {
     return rand() % max_value + 1;
 }
 
-bool BingoGame::checkWinner() {
-    for (Player& player : players) {
-        if (player.hasBingo()) {
-            cout << "Congrats, " << player.getName() << " won!" << endl;
-            return true;
-        }
-    }
-    return false;
-}
 
 int BingoGame::getMaxValue(int choice) {
     switch (choice) {
@@ -87,6 +80,7 @@ int BingoGame::getMaxValue(int choice) {
 }
 
 int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
+    string separator = "+===========================================================+";
     unordered_set<int> drawnSet(drawnNumbers.begin(), drawnNumbers.end());
 
     for (int playerIndex = 1; playerIndex <= players.size(); playerIndex++) {
@@ -94,7 +88,7 @@ int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
         ifstream file(filename);
 
         if (!file.is_open()) {
-            cerr << "Error: Could not open file: " << filename << endl;
+            cerr << "Error: Could not open file " << filename << endl;
             continue;
         }
 
@@ -123,6 +117,7 @@ int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
             row++;
         }
         
+        cout << endl  << "Achievements: " << separator << endl;
 
         for (int i = 0; i < 5; i++) {
             bool lineComplete = true;
@@ -133,8 +128,7 @@ int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
                 }
             }
             if (lineComplete) {
-                cout << "Player with card " << playerIndex << " completed a line!" << endl;
-                return playerIndex; 
+                cout << "Player with card " << playerIndex << " completed a line!" << endl << endl;
             }
         }
 
@@ -148,8 +142,7 @@ int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
                 }
             }
             if (columnComplete) {
-                cout << "Player with card " << playerIndex << " completed a column!" << endl;
-                return playerIndex; 
+                cout << "Player with card " << playerIndex << " completed a column!" << endl << endl; 
             }
         }
     }
@@ -168,21 +161,21 @@ void BingoGame::playBingo(int max_value, bool isAutomatic) {
             if (drawnNumbers.size() > 1) {
                 cout << "Last number drawn: " << drawnNumbers[drawnNumbers.size() - 2] << endl;
             }
-
+            
+            BingoCard tempCard(5, max_value, 1);
+            tempCard.displayBingoTable(max_value, drawnNumbers);
+            
             int winner = checkCardForWin(drawnNumbers);
             if (winner > 0) {
-                system("clear");
                 cout << "Player " << winner << " wins!" << endl;
                 sleep(3);
+                system("clear");
                 break; 
             }
 
-            BingoCard tempCard(5, max_value, 1);
-            tempCard.displayBingoTable(max_value, drawnNumbers);
-
             espeak(to_string(num));
             sleep(2);
-
+            
             if (!isAutomatic) {
                 cout << "Press any key to continue: ";
                 cin.ignore();
