@@ -1,3 +1,8 @@
+/**
+ * @file bingoGame.cpp
+ * @brief Implementation of the BingoGame class for managing a bingo game.
+ */
+
 #include "bingoGame.h"
 #include <iostream>
 #include <cstdlib>
@@ -8,6 +13,10 @@
 
 using namespace std;
 
+/**
+ * @brief Runs the bingo game, handling the setup and main game loop.
+ * This function initializes the game, prompts the user for game settings, generates player cards, and starts the game loop.
+ */
 void BingoGame::runBingo() {
     srand(time(0));
     system("clear");
@@ -66,11 +75,22 @@ void BingoGame::runBingo() {
     playBingo(max_value, generator_type == 1);
 }
 
+/**
+ * @brief Generates a random number within a specified range.
+ * 
+ * @param max_value The upper limit for the random number generation.
+ * @return int A random number between 1 and max_value.
+ */
 int BingoGame::generateRandNum(int max_value) {
     return rand() % max_value + 1;
 }
 
-
+/**
+ * @brief Determines the maximum value for the bingo numbers based on user choice.
+ * 
+ * @param choice The user's choice for the game type (1 for 50 numbers, 2 for 90 numbers).
+ * @return int The maximum value for the bingo numbers.
+ */
 int BingoGame::getMaxValue(int choice) {
     switch (choice) {
         case 1: return 50;
@@ -79,8 +99,18 @@ int BingoGame::getMaxValue(int choice) {
     }
 }
 
+/**
+ * @brief Checks if any player has completed a line, column, or the entire card.
+ * 
+ * This function reads each player's card from a file and checks if any line, 
+ * column, or the entire card matches the drawn numbers.
+ * 
+ * @param drawnNumbers A vector containing the numbers that have been drawn so far.
+ * @return int Returns 0 if no winner is found, otherwise returns the player index who won.
+ */
 int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
     string separator = "+===========================================================+";
+    int amountColumnCompleted = 0, amountLineCompleted = 0;
     unordered_set<int> drawnSet(drawnNumbers.begin(), drawnNumbers.end());
 
     for (int playerIndex = 1; playerIndex <= players.size(); playerIndex++) {
@@ -117,7 +147,7 @@ int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
             row++;
         }
         
-        cout << endl  << "Achievements: " << separator << endl;
+        cout << endl  << setw(37) << "Achievements" << endl << separator << endl;
 
         for (int i = 0; i < 5; i++) {
             bool lineComplete = true;
@@ -128,7 +158,8 @@ int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
                 }
             }
             if (lineComplete) {
-                cout << "Player with card " << playerIndex << " completed a line!" << endl << endl;
+                cout << "Player with card " << playerIndex << " completed a line!\n";
+                amountLineCompleted += 1;
             }
         }
 
@@ -142,13 +173,31 @@ int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
                 }
             }
             if (columnComplete) {
-                cout << "Player with card " << playerIndex << " completed a column!" << endl << endl; 
+                cout << "Player with card " << playerIndex << " completed a column!\n";
+                amountColumnCompleted += 1; 
             }
         }
+
+        if(amountColumnCompleted == 5 && amountLineCompleted == 5){
+            system("clear");
+            cout << "Player with card " << playerIndex << " has shouted BINGO !\n";
+            sleep(2);
+            return 0;
+        }
     }
+    cout << endl;
     return 0; 
 }
 
+/**
+ * @brief Manages the main game loop, drawing numbers and checking for winners.
+ * 
+ * This function handles the drawing of numbers, displays the current state of the game,
+ * and checks if any player has won after each draw.
+ * 
+ * @param max_value The maximum value for the bingo numbers.
+ * @param isAutomatic A boolean indicating if the game is in automatic mode (true) or manual mode (false).
+ */
 void BingoGame::playBingo(int max_value, bool isAutomatic) {
     vector<int> drawnNumbers;
 
