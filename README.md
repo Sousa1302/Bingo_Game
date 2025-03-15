@@ -17,6 +17,16 @@ Bingo is a game where numbers will be sorted and if that exact number matches th
 - Function 3 -> 50 / 90 pool
 - Function 4 -> Robo voice announcing the numbers
   
+## ⚙️ Requirements
+
+1. Install the espeak library:
+Run the following commands on the linux terminal:
+    sudo apt update
+    sudo apt install espeak
+
+Verify installation:
+    espeak --version
+
 
 ## 🖼️ Screenshots
 
