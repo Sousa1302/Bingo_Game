@@ -7,6 +7,18 @@
 
 namespace fs = filesystem; 
 
+/**
+ * @brief Deletes text files associated with the given player indexes.
+ *
+ * This function iterates through a vector of player indexes, constructs the corresponding
+ * filenames in the format "Card_<playerIndex>.txt", and attempts to delete each file.
+ * If the file exists and is successfully deleted, a confirmation message is printed.
+ * If the file does not exist or cannot be deleted, an appropriate error message is displayed.
+ * After each file operation, the function pauses for 2 seconds and clears the console.
+ *
+ * @param playerIndexes A vector of integers representing the indexes of players whose
+ *                      associated text files are to be deleted.
+ */
 void deleteTxtFiles(const std::vector<int>& playerIndexes) {
     for (int playerIndex : playerIndexes) {
         std::string filename = "Card_" + std::to_string(playerIndex) + ".txt";
