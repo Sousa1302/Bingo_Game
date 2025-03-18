@@ -11,13 +11,15 @@ class BingoGame {
 private:
     vector<int> drawnNumbers;
     int checkCardForWin(const vector<int>& drawnNumbers);
-public:
+    public:
     vector<Player> players;
     void runBingo(); 
     int generateRandNum(int max_value);
     int getMaxValue(int choice); 
     void playBingo(int max_value, bool isAutomatic); 
     
+    static inline const string COLOR_RED = "\u001b[31m";
+    static inline const string COLOR_RESET = "\u001b[0m";
 };
 
 #endif

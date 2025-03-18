@@ -10,8 +10,11 @@
 #include <unistd.h>
 #include "espeak.h"
 #include <unordered_set>
+#include "deleteTxtFile.h"
 
 using namespace std;
+
+int amount_cards;
 
 /**
  * @brief Runs the bingo game, handling the setup and main game loop.
@@ -56,7 +59,6 @@ void BingoGame::runBingo() {
 
     system("clear");
 
-    int amount_cards;
     do {
         cout << "Number of cards you wish to generate: ";
         cin >> amount_cards;
@@ -110,7 +112,6 @@ int BingoGame::getMaxValue(int choice) {
  */
 int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
     string separator = "+===========================================================+";
-    int amountColumnCompleted = 0, amountLineCompleted = 0;
     unordered_set<int> drawnSet(drawnNumbers.begin(), drawnNumbers.end());
 
     for (int playerIndex = 1; playerIndex <= players.size(); playerIndex++) {
@@ -127,64 +128,59 @@ int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
         int row = 0;
 
         while (getline(file, line)) {
-            
             if (line.find("+---") != string::npos) {
                 continue;
             }
 
-            
-            line.erase(remove(line.begin(), line.end(), '|'), line.end());
+            line.erase(remove(line.begin(), line.end(), '|'), line.end()); 
             stringstream ss(line);
             int num;
             int col = 0;
 
-            while (ss >> num) {
-                if (row < 5 && col < 5) {
-                    card[row][col] = num;
-                    col++;
-                }
+            while (ss >> num && row < 5 && col < 5) {
+                card[row][col] = num;
+                col++;
             }
             row++;
         }
-        
-        cout << endl  << setw(37) << "Achievements" << endl << separator << endl;
 
+        cout << endl << setw(37) << "Achievements" << endl << separator << endl;
+
+        bool hasBingo = true;
+        int linesCompleted = 0, columnsCompleted = 0;
+
+        
         for (int i = 0; i < 5; i++) {
             bool lineComplete = true;
+            bool columnComplete = true;
+
             for (int j = 0; j < 5; j++) {
                 if (drawnSet.find(card[i][j]) == drawnSet.end()) {
                     lineComplete = false;
-                    break;
+                    hasBingo = false;
+                }
+                if (drawnSet.find(card[j][i]) == drawnSet.end()) {
+                    columnComplete = false;
+                    hasBingo = false;
                 }
             }
+
             if (lineComplete) {
                 cout << "Player with card " << playerIndex << " completed a line!\n";
-                amountLineCompleted += 1;
+                linesCompleted++;
+            }
+            if (columnComplete) {
+                cout << "Player with card " << playerIndex << " completed a column!\n";
+                columnsCompleted++;
             }
         }
 
         
-        for (int j = 0; j < 5; j++) {
-            bool columnComplete = true;
-            for (int i = 0; i < 5; i++) {
-                if (drawnSet.find(card[i][j]) == drawnSet.end()) {
-                    columnComplete = false;
-                    break;
-                }
-            }
-            if (columnComplete) {
-                cout << "Player with card " << playerIndex << " completed a column!\n";
-                amountColumnCompleted += 1; 
-            }
-        }
-
-        if(amountColumnCompleted == 5 && amountLineCompleted == 5){
-            system("clear");
-            cout << "Player with card " << playerIndex << " has shouted BINGO !\n";
-            sleep(2);
-            return 0;
+        if (hasBingo) {
+            return playerIndex; 
         }
     }
+
     cout << endl;
     return 0; 
 }
@@ -216,9 +212,17 @@ void BingoGame::playBingo(int max_value, bool isAutomatic) {
             
             int winner = checkCardForWin(drawnNumbers);
             if (winner > 0) {
+                system("clear");
                 cout << "Player " << winner << " wins!" << endl;
                 sleep(3);
                 system("clear");
+                
+                vector<int> playerIndices;
+                for (int i = 1; i <= amount_cards; i++) {
+                    playerIndices.push_back(i);
+                }
+                deleteTxtFiles(playerIndices);
+    
                 break; 
             }
 

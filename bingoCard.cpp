@@ -2,8 +2,9 @@
 #include <ctime>
 #include <iostream>
 #include <algorithm>
-#include "game.h"
 #include "setFileReadOnly.h"
+#include "bingoGame.h"
+
 using namespace std;
 
 /**
@@ -84,7 +85,7 @@ void BingoCard::displayBingoTable(int max_value, const vector<int>& drawnNumbers
 
         
         bool isDrawn = find(drawnNumbers.begin(), drawnNumbers.end(), x) != drawnNumbers.end();
-        cout << (isDrawn ? COLOR_RED : "") << setw(3) << x << COLOR_RESET;
+        cout << (isDrawn ? BingoGame::COLOR_RED : "") << setw(3) << x << BingoGame::COLOR_RESET;
 
         
         if (x % 10 == 0 || x == max_value) {
