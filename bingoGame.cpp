@@ -175,6 +175,9 @@ int BingoGame::checkCardForWin(const vector<int>& drawnNumbers) {
             }
         }
 
+        /*if(columnComplete || linesCompleted){
+            hasBingo = true;
+        }*/
         
         if (hasBingo) {
             return playerIndex; 
