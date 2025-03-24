@@ -21,7 +21,7 @@ namespace fs = filesystem;
  */
 void deleteTxtFiles(const std::vector<int>& playerIndexes) {
     for (int playerIndex : playerIndexes) {
-        std::string filename = "Card_" + std::to_string(playerIndex) + ".txt";
+        string filename = "Card_" + to_string(playerIndex) + ".txt";
         
         if (fs::exists(filename)) {
             

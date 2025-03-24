@@ -69,7 +69,6 @@ void BingoGame::runBingo() {
     } while (amount_cards < 2);
 
     for (int x = 1; x <= amount_cards; x++) {
-        string playerName = "Player " + to_string(x);
         players.push_back(Player(5, max_value, x));
     }
 
